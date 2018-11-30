@@ -12,12 +12,12 @@ namespace TimeManager
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class MainPage : MasterDetailPage
     {
-        private TimeItems timeItems { get; set; }
+        private Dictionary<DateTime, TimeItems> Schedule { get; set; }
 
-        public MainPage(TimeItems _timeItems)
+        public MainPage(Dictionary<DateTime, TimeItems> _schedule)
         {
             InitializeComponent();
-            timeItems = _timeItems;
+            Schedule = _schedule;
 
             MasterPage.ListView.ItemSelected += ListView_ItemSelected;
         }
@@ -30,7 +30,7 @@ namespace TimeManager
                 return;
             else if (item.Title == "Расписание")
             {
-                page = new TimeTable(timeItems);
+                page = new TimeTable(Schedule);
             }
             page.Title = item.Title;
 

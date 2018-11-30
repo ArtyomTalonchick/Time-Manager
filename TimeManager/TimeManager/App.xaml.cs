@@ -8,13 +8,13 @@ using Xamarin.Forms;
 namespace TimeManager
 {
 	public partial class App : Application
-	{
-        private TimeItems timeItems { get; set; }
+	{        
+        private Dictionary<DateTime, TimeItems> Schedule { get; set; }
 
-		public App ()
+        public App ()
 		{
 			InitializeComponent();
-            timeItems = new TimeItems
+            var timeItems = new TimeItems
             {
                 new TimeItem { Name = "Сон", Start = "23:00", Finish = "06:00", Note = "Не переводи будильник" },
                 new TimeItem { Name = "Душ", Start = "06:00", Finish = "06:10", Notes = new List<(string,bool)>{("Почистить зубы", true), ("Помыться", false), ("Одеться", false), } },
@@ -22,7 +22,11 @@ namespace TimeManager
                 new TimeItem { Name = "Дорога", Start = "06/45", Finish = "07.30"},
             };
 
-            MainPage = new TimeManager.MainPage(timeItems);
+            Schedule = new Dictionary<DateTime, TimeItems>();
+
+            Schedule.Add(new DateTime(2018, 12, 01), timeItems);
+
+            MainPage = new MainPage(Schedule);
         }
 
 		protected override void OnStart ()

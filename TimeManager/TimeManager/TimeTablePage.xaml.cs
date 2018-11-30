@@ -12,19 +12,22 @@ namespace TimeManager
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class TimeTable : ContentPage
     {
-        private ToolbarItem changeTb;
-        private List<Grid> listOfGrid;
-        private Grid selectedGrid;
-        private TimeItem selectedItem;
+        private ToolbarItem changeTb;       //Элемент Toolbar'a для перехода на страницу изменений расписаний дня
+        private List<Grid> listOfGrid;      //Коллекция Grid'оф для элементов дня 
+                                                //(лежит в главном Grid'е, включает в себя время и название элемента)
+        private Grid selectedGrid;          //Выбранный Grid из коллекции Grid'оф
+        private TimeItem selectedItem;      //Элемент дня, соответствующий выбранному Grid'у
 
-        private TimeItems timeItems { get; set; }
-        private bool addNoteIsOpen;
+        private Dictionary<DateTime, TimeItems> Schedule { get; set; }  //коллекция расписаний на день
+        private TimeItems timeItems { get; set; }                       //расписание на выбранный день
+        private bool addNoteIsOpen;                                     //флаг для работы кнопки addNoteButton в выбранном элементе
 
-        public TimeTable(TimeItems _timeItems)
+        //конструктор
+        public TimeTable(Dictionary<DateTime, TimeItems> _schedule)
         {
             InitializeComponent();
             addNoteIsOpen = false;
-            timeItems = _timeItems;
+            Schedule = _schedule;
 
             changeTb = new ToolbarItem
             {
@@ -39,19 +42,35 @@ namespace TimeManager
             GridOfTimeItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(6, GridUnitType.Star) });
 
             listOfGrid = new List<Grid>();
+            InitializeGridOfTimeItem();
+        }
 
+        //инициализирует GridOfTimeItem элементами дня соответсвующего выбранной дате на DatePickerOfTimeTable
+        private void InitializeGridOfTimeItem()
+        {
+            try
+            {
+                timeItems = Schedule[DatePickerOfTimeTable.Date];
+            }
+            catch
+            {
+                timeItems = new TimeItems();
+            }
+            GridOfTimeItem.RowDefinitions.Clear();
+            GridOfTimeItem.Children.Clear();
+            listOfGrid.Clear();
             int i = 0;
             foreach (var item in timeItems)
             {
                 var startLabel = new Label { Text = item.Start, FontSize = 16, TextColor = Color.FromHex("F44336"), HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.End };
                 var finishLabel = new Label { Text = item.Finish, FontSize = 16, TextColor = Color.FromHex("42A5F5"), HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Start };
-                var nameButton = new Button { Text = item.Name, TextColor = Color.FromHex("424242"), FontSize = 30, FontAttributes=FontAttributes.Italic, BackgroundColor =Color.Transparent, HorizontalOptions=LayoutOptions.Start, VerticalOptions = LayoutOptions.CenterAndExpand };
-                nameButton.Clicked += nameButton_Clicked;                
+                var nameButton = new Button { Text = item.Name, TextColor = Color.FromHex("424242"), FontSize = 30, FontAttributes = FontAttributes.Italic, BackgroundColor = Color.Transparent, HorizontalOptions = LayoutOptions.Start, VerticalOptions = LayoutOptions.CenterAndExpand };
+                nameButton.Clicked += nameButton_Clicked;
                 GridOfTimeItem.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                 GridOfTimeItem.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                 GridOfTimeItem.Children.Add(startLabel, 0, i);
                 GridOfTimeItem.Children.Add(finishLabel, 0, i + 1);
-                var gridForItem = new Grid();                
+                var gridForItem = new Grid();
                 listOfGrid.Add(gridForItem);
                 gridForItem.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                 gridForItem.Children.Add(nameButton, 0, 0);
@@ -59,11 +78,17 @@ namespace TimeManager
                 Grid.SetRowSpan(gridForItem, 2);
                 i += 2;
             }
-
         }
 
+        //обработчик выбора элемента дня  ----- показывает заметки
         private void nameButton_Clicked(object s, EventArgs e)
         {
+            //если "открыто окно" для добавления заметок
+            if (addNoteIsOpen)
+            {
+                selectedGrid.Children.RemoveAt(selectedGrid.Children.Count - 1);
+                addNoteIsOpen = false;
+            }
             if (selectedGrid != null)
             {
                 selectedItem.Notes.Clear();
@@ -103,7 +128,6 @@ namespace TimeManager
             var addNoteButton = new Button { Text = "Добавить", FontSize = 10, BackgroundColor=Color.Transparent, HorizontalOptions = LayoutOptions.Center };
             addNoteButton.Clicked += (_s, _e) => addNoteButton_Clicked(addNoteButton, ref i);
             selectedGrid.Children.Add(addNoteButton, 0, i++);
-
         }
         
         //обработчик удаления заметки
@@ -137,9 +161,11 @@ namespace TimeManager
                 selectedGrid.Children.RemoveAt(i - 2);
                 selectedGrid.Children.Add(new NoteView { Text = text }, 0, i - 2);
                 selectedGrid.Children.Add(addNoteButton, 0, i - 1);
-
             }
             addNoteIsOpen = !addNoteIsOpen;
         }
+
+        //обработчик выбора даты
+        private void DatePickerOfTimeTable_DateSelected(object s, EventArgs e) => InitializeGridOfTimeItem();
     }
 }
