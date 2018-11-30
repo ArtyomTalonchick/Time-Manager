@@ -35,7 +35,7 @@ namespace TimeManager
                 Order = ToolbarItemOrder.Primary,
                 Priority = 0,
             };
-            changeTb.Clicked += async (s,e) => await Navigation.PushAsync(new ChangeTimeTablePage(timeItems));
+            changeTb.Clicked += async (s,e) => await Navigation.PushAsync(new ChangeTimeTablePage(Schedule));
             ToolbarItems.Add(changeTb);
 
             GridOfTimeItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -62,8 +62,8 @@ namespace TimeManager
             int i = 0;
             foreach (var item in timeItems)
             {
-                var startLabel = new Label { Text = item.Start, FontSize = 16, TextColor = Color.FromHex("F44336"), HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.End };
-                var finishLabel = new Label { Text = item.Finish, FontSize = 16, TextColor = Color.FromHex("42A5F5"), HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Start };
+                var startLabel = new Label { Text = item.Start.ToString(@"hh\:mm"), FontSize = 16, TextColor = Color.FromHex("F44336"), HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.End };
+                var finishLabel = new Label { Text = item.Finish.ToString(@"hh\:mm"), FontSize = 16, TextColor = Color.FromHex("42A5F5"), HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Start };
                 var nameButton = new Button { Text = item.Name, TextColor = Color.FromHex("424242"), FontSize = 30, FontAttributes = FontAttributes.Italic, BackgroundColor = Color.Transparent, HorizontalOptions = LayoutOptions.Start, VerticalOptions = LayoutOptions.CenterAndExpand };
                 nameButton.Clicked += nameButton_Clicked;
                 GridOfTimeItem.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -89,6 +89,7 @@ namespace TimeManager
                 selectedGrid.Children.RemoveAt(selectedGrid.Children.Count - 1);
                 addNoteIsOpen = false;
             }
+            //сохраняем изменения для прошлого выбранного элемента
             if (selectedGrid != null)
             {
                 selectedItem.Notes.Clear();
@@ -106,13 +107,13 @@ namespace TimeManager
                 selectedGrid.RowDefinitions.Add(rowDefinition);
             }
             selectedItem = timeItems.FindItemByName(((Button)s).Text);
+            //если выбран предыдущий элемент, то закрываем его
             if (selectedGrid == listOfGrid[selectedItem.index])
             {
                 selectedGrid = null;
                 return;
             }
-            selectedGrid = listOfGrid[selectedItem.index];
-            
+            selectedGrid = listOfGrid[selectedItem.index];            
             //добавляем все заметки для выбранного элемента дня
             int i = 1;
             foreach (var note in selectedItem.Notes)
@@ -122,7 +123,6 @@ namespace TimeManager
                 noteView.Clicked += (_s, _e) => deleteNote_Clicked(noteView, (Button)s);
                 selectedGrid.Children.Add(noteView, 0, i++);
             }
-
             //добавляем кнопку "добавить заметку"
             selectedGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             var addNoteButton = new Button { Text = "Добавить", FontSize = 10, BackgroundColor=Color.Transparent, HorizontalOptions = LayoutOptions.Center };

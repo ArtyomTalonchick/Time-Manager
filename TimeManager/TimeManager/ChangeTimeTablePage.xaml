@@ -3,6 +3,17 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TimeManager.ChangeTimeTablePage">
     <ContentPage.Content>
-        <TableView x:Name="TableOfTimeItem"/>
+        <Grid x:Name="GridOfTimeTable">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="9*"/>
+            </Grid.RowDefinitions>
+            <DatePicker x:Name="DatePickerOfTimeTable" Grid.Row="0" HorizontalOptions="Center" />
+            <ScrollView Grid.Row="1">
+                <ScrollView.Content>
+                    <Grid x:Name="GridOfTimeItem"/>
+                </ScrollView.Content>
+            </ScrollView>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

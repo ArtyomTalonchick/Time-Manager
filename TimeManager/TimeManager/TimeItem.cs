@@ -65,7 +65,7 @@ namespace TimeManager
         }
         public void OrderByTime()
         { 
-            var tempRes = this.OrderBy(T => T.start_int);
+            var tempRes = this.OrderBy(T => T.Start);
             List<TimeItem> result = new List<TimeItem>();
             int i = 0;
             foreach (var item in tempRes)
@@ -145,48 +145,15 @@ namespace TimeManager
         public int index { get; set; }
         public string Name { get; set; }
         public List<(string, bool)> Notes { get; set; }
-        public int start_int { get; private set; }
-        public int finish_int { get; private set; }
-        private DateTime start;
-        private DateTime finish;
-        public string Start
-        {
-            get
-            {
-                return start.ToShortTimeString();
-            }
-            set
-            {
-                Regex regex1 = new Regex(@"^?\d\d.\d\d$");
-                if (regex1.IsMatch(value))
-                {
-                    start = new DateTime(1, 1, 1, Convert.ToInt32(value.Substring(0, 2)) % 24, Convert.ToInt32(value.Substring(3, 2)) % 60, 0);
-                    start_int = start.Hour * 60 + start.Minute;
-                }
-            }
-        }
-        public string Finish
-        {
-            get
-            {
-                return finish.ToShortTimeString();
-            }
-            set
-            {
-                Regex regex1 = new Regex(@"^?\d\d.\d\d$");
-                if (regex1.IsMatch(value))
-                {
-                    finish = new DateTime(1, 1, 1, Convert.ToInt32(value.Substring(0, 2)) % 24, Convert.ToInt32(value.Substring(3, 2)) % 60, 0);
-                    finish_int = finish.Hour * 60 + finish.Minute;
-                }
-            }
-        }
+        public TimeSpan Start { get; set; }
+        public TimeSpan Finish { get; set; }
+                 
         public string Note { get; set; }
         public TimeItem()
         {
             index = -1;
-            start = new DateTime();
-            finish = new DateTime();
+            Start = new TimeSpan();
+            Finish = new TimeSpan();
             Name = "-";
             Notes = new List<(string, bool)>();
         }

@@ -13,85 +13,58 @@ namespace TimeManager
 	[XamlCompilation(XamlCompilationOptions.Compile)]
 	public partial class ChangeTimeTablePage : ContentPage
     {
+        private Dictionary<DateTime, TimeItems> Schedule;
         private TimeItems timeItems { get; set; }
+        private List<Grid> listOfGrid;      //Коллекция Grid'оф для элементов дня 
 
-        public ChangeTimeTablePage (TimeItems _timeItems)
-		{
-			InitializeComponent ();
-            timeItems = _timeItems;
+        public ChangeTimeTablePage (Dictionary<DateTime, TimeItems> _schedule)
+        {
+            InitializeComponent();
+            Schedule = _schedule;
 
-            var nameEntrys = new List<Entry>();
-            var startTimePickers = new List<TimePicker>();
-            var finishTimePickers = new List<TimePicker>();
             
-            var root = new TableRoot();
-            foreach(var item in timeItems)
-            {
-                var nameGrid = new Grid
-                {
-                    ColumnDefinitions =
-                    {
-                        new ColumnDefinition { Width = new GridLength (2, GridUnitType.Star) },
-                        new ColumnDefinition { Width = new GridLength (3, GridUnitType.Star) },
-                    }                 
-                };
-                var startGrid = new Grid
-                {
-                    ColumnDefinitions =
-                    {
-                        new ColumnDefinition { Width = new GridLength (2, GridUnitType.Star) },
-                        new ColumnDefinition { Width = new GridLength (3, GridUnitType.Star) },
-                    }
-                };
-                var finishGrid = new Grid
-                {
-                    ColumnDefinitions =
-                    {
-                        new ColumnDefinition { Width = new GridLength (2, GridUnitType.Star) },
-                        new ColumnDefinition { Width = new GridLength (3, GridUnitType.Star) },
-                    }
-                };
 
-                root.Add
-                (
-                    new TableSection(item.Name)
-                    {
-                        new ViewCell {View = nameGrid},
-                        new ViewCell {View = startGrid},
-                        new ViewCell {View = finishGrid},
-                    }
-                );
-                nameEntrys.Add(new Entry { Text = item.Name });
-                nameGrid.Children.Add(new Label { Text = "Название:" }, 0, 0);
-                nameGrid.Children.Add(nameEntrys.Last(), 1, 0);
-                startTimePickers.Add(new TimePicker { Time = new TimeSpan(item.start_int / 60, item.start_int % 60, 0) });
-                startGrid.Children.Add(new Label { Text = "Время начала:" }, 0, 0);
-                startGrid.Children.Add(startTimePickers.Last(), 1, 0);
-                finishTimePickers.Add(new TimePicker { Time = new TimeSpan(item.finish_int / 60, item.finish_int % 60, 0) });
-                finishGrid.Children.Add(new Label { Text = "Время окончания:" }, 0, 0);
-                finishGrid.Children.Add(finishTimePickers.Last(), 1, 0);
-            }
+            GridOfTimeItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) });
+            GridOfTimeItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(12, GridUnitType.Star) });
 
-            TableOfTimeItem.Root = root;
-
-            scrollView();
-
-
+            listOfGrid = new List<Grid>();
+            InitializeGridOfTimeItem();
         }
 
-        private void scrollView()
+        //инициализирует GridOfTimeItem элементами дня соответсвующего выбранной дате на DatePickerOfTimeTable
+        private void InitializeGridOfTimeItem()
         {
-            var grid = new Grid();
-            int i = 0;           
+            try
+            {
+                timeItems = Schedule[DatePickerOfTimeTable.Date];
+            }
+            catch
+            {
+                timeItems = new TimeItems();
+            }
+            GridOfTimeItem.RowDefinitions.Clear();
+            GridOfTimeItem.Children.Clear();
+            listOfGrid.Clear();
+            int i = 0;
             foreach (var item in timeItems)
             {
-                grid.RowDefinitions.Add(new RowDefinition { Height = 100 });
-                grid.Children.Add(new Label { Text = item.Name }, 0, i);
-                i++;
+                var startEntry = new TimePicker { Time = item.Start };
+                var finishEntry = new TimePicker { Time = item.Finish };
+                var nameEntry = new Entry { Text = item.Name, TextColor = Color.FromHex("424242"), FontSize = 30, FontAttributes = FontAttributes.Italic};
+                GridOfTimeItem.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                GridOfTimeItem.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                GridOfTimeItem.Children.Add(startEntry, 0, i);
+                GridOfTimeItem.Children.Add(finishEntry, 0, i + 1);
+                var gridForItem = new Grid();
+                listOfGrid.Add(gridForItem);
+                gridForItem.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                gridForItem.Children.Add(nameEntry, 0, 0);
+                GridOfTimeItem.Children.Add(gridForItem, 1, i);
+                Grid.SetRowSpan(gridForItem, 2);
+                i += 2;
             }
-            this.Content = new ScrollView { Content = grid };
         }
-        
+
 
     }
 }
