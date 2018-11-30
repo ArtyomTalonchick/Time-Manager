@@ -17,7 +17,7 @@ namespace TimeManager
             timeItems = new TimeItems
             {
                 new TimeItem { Name = "Сон", Start = "23:00", Finish = "06:00", Note = "Не переводи будильник" },
-                new TimeItem { Name = "Душ", Start = "06:00", Finish = "06:10" },
+                new TimeItem { Name = "Душ", Start = "06:00", Finish = "06:10", Notes = new List<(string,bool)>{("Почистить зубы", true), ("Помыться", false), ("Одеться", false), } },
                 new TimeItem { Name = "Завтрак", Start = "06:10", Finish = "06:30", Note = "Завтрак - главный прием пищи" },
                 new TimeItem { Name = "Дорога", Start = "06/45", Finish = "07.30"},
             };

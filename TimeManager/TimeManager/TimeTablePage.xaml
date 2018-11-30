@@ -6,12 +6,14 @@
         <Grid x:Name="GridOfTimeTable">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="7*"/>
-                <RowDefinition Height="2*"/>
+                <RowDefinition Height="9*"/>
             </Grid.RowDefinitions>
-            <DatePicker x:Name="DatePickerOfTimeTable" Grid.Row="0"/>
-            <ListView x:Name="ListOfTimeItem" Grid.Row="1"/>
-            <Editor x:Name="ItemEditor" Grid.Row="2" Focused="ItemEditor_Focused"/>
+            <DatePicker x:Name="DatePickerOfTimeTable" Grid.Row="0" HorizontalOptions="Center"/>
+            <ScrollView Grid.Row="1">
+                <ScrollView.Content>
+                    <Grid x:Name="GridOfTimeItem"/>
+                </ScrollView.Content>
+            </ScrollView>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

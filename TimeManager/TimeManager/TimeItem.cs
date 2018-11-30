@@ -67,9 +67,11 @@ namespace TimeManager
         { 
             var tempRes = this.OrderBy(T => T.start_int);
             List<TimeItem> result = new List<TimeItem>();
+            int i = 0;
             foreach (var item in tempRes)
             {
                 result.Add(item);
+                item.index = i++;
             }
             list = result;
         }
@@ -84,6 +86,19 @@ namespace TimeManager
                 result.Add(item);
             }
             return result;
+        }
+        public TimeItem FindItemByName(string name)
+        {
+            var tempRes = this.Where(T => T.Name == name);
+            TimeItems result = new TimeItems();
+            if (tempRes.Count() == 0)
+                return null;
+            TimeItem timeItem = new TimeItem();
+            foreach (var item in tempRes)
+            {
+                timeItem = item;
+            }
+            return timeItem;
         }
 
         //реализация интерфейса IEnumerable<T>
@@ -127,7 +142,9 @@ namespace TimeManager
     [Serializable]
     public class TimeItem : INotifyPropertyChanged
     {
+        public int index { get; set; }
         public string Name { get; set; }
+        public List<(string, bool)> Notes { get; set; }
         public int start_int { get; private set; }
         public int finish_int { get; private set; }
         private DateTime start;
@@ -167,9 +184,11 @@ namespace TimeManager
         public string Note { get; set; }
         public TimeItem()
         {
+            index = -1;
             start = new DateTime();
             finish = new DateTime();
             Name = "-";
+            Notes = new List<(string, bool)>();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
