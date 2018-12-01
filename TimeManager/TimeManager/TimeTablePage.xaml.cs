@@ -12,30 +12,30 @@ namespace TimeManager
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class TimeTable : ContentPage
     {
-        private ToolbarItem changeTb;       //Элемент Toolbar'a для перехода на страницу изменений расписаний дня
         private List<Grid> listOfGrid;      //Коллекция Grid'оф для элементов дня 
                                                 //(лежит в главном Grid'е, включает в себя время и название элемента)
         private Grid selectedGrid;          //Выбранный Grid из коллекции Grid'оф
         private TimeItem selectedItem;      //Элемент дня, соответствующий выбранному Grid'у
-
-        private Dictionary<DateTime, TimeItems> Schedule { get; set; }  //коллекция расписаний на день
+        
         private TimeItems timeItems { get; set; }                       //расписание на выбранный день
         private bool addNoteIsOpen;                                     //флаг для работы кнопки addNoteButton в выбранном элементе
 
         //конструктор
-        public TimeTable(Dictionary<DateTime, TimeItems> _schedule)
+        public TimeTable()
         {
             InitializeComponent();
             addNoteIsOpen = false;
-            Schedule = _schedule;
 
-            changeTb = new ToolbarItem
+            var changeTb = new ToolbarItem
             {
                 Text = "Изменить",
                 Order = ToolbarItemOrder.Primary,
                 Priority = 0,
             };
-            changeTb.Clicked += async (s,e) => await Navigation.PushAsync(new ChangeTimeTablePage(Schedule));
+            changeTb.Clicked += async (s, e) =>
+            {                
+                await Navigation.PushAsync(new ChangeTimeTablePage(this));
+            };
             ToolbarItems.Add(changeTb);
 
             GridOfTimeItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -44,13 +44,13 @@ namespace TimeManager
             listOfGrid = new List<Grid>();
             InitializeGridOfTimeItem();
         }
-
+        
         //инициализирует GridOfTimeItem элементами дня соответсвующего выбранной дате на DatePickerOfTimeTable
         private void InitializeGridOfTimeItem()
         {
             try
             {
-                timeItems = Schedule[DatePickerOfTimeTable.Date];
+                timeItems = Data.Schedule[DatePickerOfTimeTable.Date];
             }
             catch
             {
@@ -62,17 +62,21 @@ namespace TimeManager
             int i = 0;
             foreach (var item in timeItems)
             {
-                var startLabel = new Label { Text = item.Start.ToString(@"hh\:mm"), FontSize = 16, TextColor = Color.FromHex("F44336"), HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.End };
-                var finishLabel = new Label { Text = item.Finish.ToString(@"hh\:mm"), FontSize = 16, TextColor = Color.FromHex("42A5F5"), HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Start };
-                var nameButton = new Button { Text = item.Name, TextColor = Color.FromHex("424242"), FontSize = 30, FontAttributes = FontAttributes.Italic, BackgroundColor = Color.Transparent, HorizontalOptions = LayoutOptions.Start, VerticalOptions = LayoutOptions.CenterAndExpand };
+                var startLabel = new Label { Text = item.Start.ToString(@"hh\:mm"), FontSize = 16, TextColor = ColorSetting.colorOfStart, HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.End };
+                var finishLabel = new Label { Text = item.Finish.ToString(@"hh\:mm"), FontSize = 16, TextColor = ColorSetting.colorOfFinish, HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Start };
+                var nameButton = new Button { Text = item.Name, TextColor = ColorSetting.colorOfName, FontSize = 30, FontAttributes = FontAttributes.Italic, BackgroundColor = Color.Transparent, HorizontalOptions = LayoutOptions.Start, VerticalOptions = LayoutOptions.CenterAndExpand };
                 nameButton.Clicked += nameButton_Clicked;
                 GridOfTimeItem.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                 GridOfTimeItem.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-                GridOfTimeItem.Children.Add(startLabel, 0, i);
-                GridOfTimeItem.Children.Add(finishLabel, 0, i + 1);
                 var gridForItem = new Grid();
                 listOfGrid.Add(gridForItem);
                 gridForItem.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+                var box = new BoxView {Color = ColorSetting.colorOfBox };
+                GridOfTimeItem.Children.Add(box, 0, i);
+                Grid.SetColumnSpan(box, 2);
+                Grid.SetRowSpan(box, 2);
+                GridOfTimeItem.Children.Add(startLabel, 0, i);
+                GridOfTimeItem.Children.Add(finishLabel, 0, i + 1);
                 gridForItem.Children.Add(nameButton, 0, 0);
                 GridOfTimeItem.Children.Add(gridForItem, 1, i);
                 Grid.SetRowSpan(gridForItem, 2);
@@ -80,7 +84,7 @@ namespace TimeManager
             }
         }
 
-        //обработчик выбора элемента дня  ----- показывает заметки
+        //обработчик выбора элемента дня  -----  показывает заметки
         private void nameButton_Clicked(object s, EventArgs e)
         {
             //если "открыто окно" для добавления заметок
@@ -108,12 +112,12 @@ namespace TimeManager
             }
             selectedItem = timeItems.FindItemByName(((Button)s).Text);
             //если выбран предыдущий элемент, то закрываем его
-            if (selectedGrid == listOfGrid[selectedItem.index])
+            if (selectedGrid == listOfGrid[selectedItem.Index])
             {
                 selectedGrid = null;
                 return;
             }
-            selectedGrid = listOfGrid[selectedItem.index];            
+            selectedGrid = listOfGrid[selectedItem.Index];            
             //добавляем все заметки для выбранного элемента дня
             int i = 1;
             foreach (var note in selectedItem.Notes)
@@ -167,5 +171,8 @@ namespace TimeManager
 
         //обработчик выбора даты
         private void DatePickerOfTimeTable_DateSelected(object s, EventArgs e) => InitializeGridOfTimeItem();
+
+        //метод для обнавления расписания
+        public void ScheduleUpdate() => InitializeGridOfTimeItem();
     }
 }

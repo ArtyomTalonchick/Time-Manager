@@ -9,49 +9,70 @@ using System.Linq;
 
 namespace TimeManager
 {
+    public static class Data
+    {
+        public static Dictionary<DateTime, TimeItems> Schedule { get; set; }
+        public static Dictionary<DateTime, TimeItem> ScheduleTemplate { get; set; }
+    }
+
     [Serializable]
     public class TimeItems : IEnumerable<TimeItem>, INotifyCollectionChanged
     {
+        private static int lastIdentifier;
         //поля 
         private List<TimeItem> list { get; set; }
         //конструктор
         public TimeItems(params TimeItem[] _array)
         {
+            lastIdentifier = 0;
             list = new List<TimeItem>();
             foreach (var item in _array)
             {
-                list.Add(item);
+                Add(item);
             }
-            OrderByTime();
+            OrderByTime();  //нужно исправить!!! не целесообразно!!!
         }
 
         //индексатор
-        public TimeItem this[int i]
+        public TimeItem this[int index]
         {
             get
             {
-                return list[i];
+                return list[index];
             }
             set
             {
-                list[i] = value;
+                list[index] = value;
             }
         }
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
         public void OnCollectionChanged(NotifyCollectionChangedAction action, object changedItem) =>
             CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(action, changedItem));
-         
+
         //методы
         public void Add(TimeItem item)
         {
             list.Add(item);
-            OrderByTime();
+            item.Identifier = lastIdentifier++;
+            item.Index = list.Count - 1;
             OnCollectionChanged(NotifyCollectionChangedAction.Add, this);
         }
         public void Clear() => list.Clear();
         public void CopyTo(TimeItem[] array, int arrayIndex) => list.CopyTo(array, arrayIndex);
         public bool Remove(TimeItem item) => list.Remove(item);
+        public void RemoveAt(int index) => list.RemoveAt(index);
+        public void DeleteByIdentifier(int identifier) 
+        {
+            var item = FindItemByIdentifier(identifier);
+            list.Remove(item);
+            int i = item.Index;
+            for (; i<list.Count;i++)
+            {
+                list[i].Index = i;
+            }
+            
+        }
         public int Count() => list.Count();
         public void OrderByString()
         {
@@ -71,7 +92,8 @@ namespace TimeManager
             foreach (var item in tempRes)
             {
                 result.Add(item);
-                item.index = i++;
+                item.Index = i;
+                i++;
             }
             list = result;
         }
@@ -90,6 +112,19 @@ namespace TimeManager
         public TimeItem FindItemByName(string name)
         {
             var tempRes = this.Where(T => T.Name == name);
+            TimeItems result = new TimeItems();
+            if (tempRes.Count() == 0)
+                return null;
+            TimeItem timeItem = new TimeItem();
+            foreach (var item in tempRes)
+            {
+                timeItem = item;
+            }
+            return timeItem;
+        }
+        public TimeItem FindItemByIdentifier(int identifier)
+        {
+            var tempRes = this.Where(T => T.Identifier == identifier);
             TimeItems result = new TimeItems();
             if (tempRes.Count() == 0)
                 return null;
@@ -142,7 +177,8 @@ namespace TimeManager
     [Serializable]
     public class TimeItem : INotifyPropertyChanged
     {
-        public int index { get; set; }
+        public int Index { get; set; }
+        public int Identifier { get; set; }
         public string Name { get; set; }
         public List<(string, bool)> Notes { get; set; }
         public TimeSpan Start { get; set; }
@@ -151,10 +187,11 @@ namespace TimeManager
         public string Note { get; set; }
         public TimeItem()
         {
-            index = -1;
+            Index = 0;
+            Identifier = 0;
             Start = new TimeSpan();
             Finish = new TimeSpan();
-            Name = "-";
+            Name = "Название";
             Notes = new List<(string, bool)>();
         }
 

@@ -21,6 +21,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Update="AddScheduleTemplatePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="ChangeTimeTablePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>

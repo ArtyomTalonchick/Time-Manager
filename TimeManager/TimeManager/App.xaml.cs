@@ -12,18 +12,18 @@ namespace TimeManager
 {
 	public partial class App : Application
 	{        
-        private Dictionary<DateTime, TimeItems> Schedule { get; set; }
         private string pathSchedule { get; set; }
         public App ()
 		{
 			InitializeComponent();
+            InitializeColor();
 
             pathSchedule = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "pathSchedule.dat");
             deserialize();
             //func();
             //serialize();
 
-            MainPage = new MainPage(Schedule);
+            MainPage = new MainPage();
         }
 
         private void func()
@@ -49,22 +49,30 @@ namespace TimeManager
             timeItem.Start = new TimeSpan(6, 10, 0);
             timeItem.Finish = new TimeSpan(6, 30, 0);
             timeItems.Add(timeItem);
-            
-            Schedule = new Dictionary<DateTime, TimeItems>();
-            Schedule.Add(new DateTime(2018, 12, 01), timeItems);
-        }
 
+            Data.Schedule = new Dictionary<DateTime, TimeItems>();
+            Data.Schedule.Add(new DateTime(2018, 12, 01), timeItems);
+        }
         public void serialize()
         {
             var formatter = new BinaryFormatter();           
             using (Stream s = File.Create(pathSchedule))
-                formatter.Serialize(s, Schedule);
+                formatter.Serialize(s, Data.Schedule);
         }
         public void deserialize()
         {
             var formatter = new BinaryFormatter();
             using (Stream s = File.OpenRead(pathSchedule))
-                Schedule = (Dictionary<DateTime, TimeItems>)formatter.Deserialize(s);
+                Data.Schedule = (Dictionary<DateTime, TimeItems>)formatter.Deserialize(s);
+        }
+
+        //метод для инициализации цветов
+        private void InitializeColor()
+        {
+            ColorSetting.colorOfStart = Color.FromHex("F44336");
+            ColorSetting.colorOfFinish = Color.FromHex("42A5F5");
+            ColorSetting.colorOfName = Color.FromHex("424242");
+            ColorSetting.colorOfBox = Color.FromHex("E0E0E0");
         }
 
         protected override void OnStart ()
