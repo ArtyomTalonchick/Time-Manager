@@ -33,8 +33,9 @@ namespace TimeManager
                 Priority = 0,
             };
             changeTb.Clicked += async (s, e) =>
-            {                
-                await Navigation.PushAsync(new ChangeTimeTablePage(this));
+            {
+                // await Navigation.PushAsync(new ChangeTimeTablePage(this));
+                await Navigation.PushAsync(new CreatingScheduleTabbedPage());
             };
             ToolbarItems.Add(changeTb);
 
@@ -48,14 +49,7 @@ namespace TimeManager
         //инициализирует GridOfTimeItem элементами дня соответсвующего выбранной дате на DatePickerOfTimeTable
         private void InitializeGridOfTimeItem()
         {
-            try
-            {
-                timeItems = Data.Schedule[DatePickerOfTimeTable.Date];
-            }
-            catch
-            {
-                timeItems = new TimeItems();
-            }
+            timeItems = Data.Schedule.GetTimeItems(DatePickerOfTimeTable.Date);
             GridOfTimeItem.RowDefinitions.Clear();
             GridOfTimeItem.Children.Clear();
             listOfGrid.Clear();

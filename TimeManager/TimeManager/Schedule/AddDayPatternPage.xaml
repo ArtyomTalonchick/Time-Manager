@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TimeManager.AddDayPatternPage">
+    <ContentPage.Content>
+        <Grid x:Name="GridOfTimeTable">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="9*"/>
+            </Grid.RowDefinitions>
+            <Button Text="Выбрать дни" Grid.Row="0" Clicked="ChoiceOfDaysButton_Clicked"/>
+            <ScrollView Grid.Row="1">
+                <ScrollView.Content>
+                    <Grid x:Name="GridOfTimeItem"/>
+                </ScrollView.Content>
+            </ScrollView>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

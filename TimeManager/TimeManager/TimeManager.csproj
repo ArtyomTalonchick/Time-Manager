@@ -15,16 +15,19 @@
     <Compile Update="MainPageMenuItem.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="TimeTablePage.xaml.cs">
+    <Compile Update="Schedule\TimeTablePage.xaml.cs">
       <DependentUpon>TimeTablePage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="AddScheduleTemplatePage.xaml">
+    <EmbeddedResource Update="Schedule\AddDayPatternPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="ChangeTimeTablePage.xaml">
+    <EmbeddedResource Update="Schedule\ChangeTimeTablePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Schedule\CreatingScheduleTabbedPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="MainPage.xaml">
@@ -36,7 +39,7 @@
     <EmbeddedResource Update="MainPageMaster.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="TimeTablePage.xaml">
+    <EmbeddedResource Update="Schedule\TimeTablePage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

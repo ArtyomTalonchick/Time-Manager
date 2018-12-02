@@ -18,7 +18,8 @@ namespace TimeManager
         private List<(TimeItem timeItem, Grid grid, TimePicker startTimePicker, TimePicker finishTimePicker)> ListOfItemAndViews;
 
         //конструктор
-        public ChangeTimeTablePage (TimeTable timeTable)
+        //public ChangeTimeTablePage(TimeTable timeTable)
+        public ChangeTimeTablePage()
         {
             InitializeComponent();
             var saveTb = new ToolbarItem
@@ -30,8 +31,8 @@ namespace TimeManager
             saveTb.Clicked += async (s, e) =>
             {
                 SaveChanges();
-                await Navigation.PopAsync();
-                timeTable.ScheduleUpdate();
+          //      await Navigation.PopAsync();
+           //     timeTable.ScheduleUpdate();
             };
             ToolbarItems.Add(saveTb);
             
@@ -45,16 +46,7 @@ namespace TimeManager
         private void InitializeGridOfTimeItem()
         {
             ListOfItemAndViews = new List<(TimeItem, Grid, TimePicker, TimePicker)>();
-            if (Data.Schedule.ContainsKey(DatePickerOfTimeTable.Date)) 
-            {
-                
-                timeItems = Data.Schedule[DatePickerOfTimeTable.Date];
-            }
-            else
-            {
-                timeItems = new TimeItems();
-                Data.Schedule.Add(DatePickerOfTimeTable.Date, timeItems);
-            }
+            timeItems = Data.Schedule.GetTimeItems(DatePickerOfTimeTable.Date);
             GridOfTimeItem.RowDefinitions.Clear();
             GridOfTimeItem.Children.Clear();
             ListOfItemAndViews.Clear();
@@ -193,7 +185,7 @@ namespace TimeManager
 
         private async void AddScheduleTemplateButton_Clicked(object s, EventArgs e)
         {
-            await Navigation.PopAsync();
+        //    await Navigation.PopAsync();
         }
     }
 }

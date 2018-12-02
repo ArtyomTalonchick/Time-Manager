@@ -11,8 +11,23 @@ namespace TimeManager
 {
     public static class Data
     {
-        public static Dictionary<DateTime, TimeItems> Schedule { get; set; }
-        public static Dictionary<DateTime, TimeItem> ScheduleTemplate { get; set; }
+        public static List<(List<DayOfWeek> days, DateTime start, DateTime finish, TimeItems timeItems)> ItemsPatterns { get; set; }
+        public static Dictionary<DateTime, TimeItems> Schedule;
+
+        public static TimeItems GetTimeItems(this Dictionary<DateTime, TimeItems> Schedule, DateTime key)
+        {
+            if(Schedule.ContainsKey(key))
+                return Schedule[key];
+            foreach(var intervalPattern in ItemsPatterns)
+            {
+                if (intervalPattern.start.Year > key.Year || intervalPattern.start.Month > key.Month || intervalPattern.start.Day > key.Day ||
+                    intervalPattern.finish.Year < key.Year || intervalPattern.finish.Month < key.Month || intervalPattern.finish.Day < key.Day) 
+                    continue;
+                if(intervalPattern.days.Contains(key.DayOfWeek))
+                    return intervalPattern.timeItems;
+            }
+            return new TimeItems();
+        }        
     }
 
     [Serializable]
