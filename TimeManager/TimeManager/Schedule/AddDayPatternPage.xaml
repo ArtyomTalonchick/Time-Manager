@@ -8,7 +8,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="9*"/>
             </Grid.RowDefinitions>
-            <Button Text="Выбрать дни" Grid.Row="0" Clicked="ChoiceOfDaysButton_Clicked"/>
+            <Button x:Name="ChoiceDayButton" Text="Выбрать дни" Grid.Row="0" Clicked="ChoiceOfDaysButton_Clicked"/>
             <ScrollView Grid.Row="1">
                 <ScrollView.Content>
                     <Grid x:Name="GridOfTimeItem"/>

@@ -30,6 +30,10 @@ namespace TimeManager
             {
                 page = new TimeTable();
             }
+            else if (item.Title == "List")
+            {
+              //  page = new ListViewPage1();
+            }
             page.Title = item.Title;
 
             Detail = new NavigationPage(page);

@@ -23,6 +23,8 @@ namespace TimeManager
             //func();
             //serialize();
 
+            Data.ItemsPatterns = new List<(List<DayOfWeek> days, DateTime start, DateTime finish, TimeItems timeItems)>();
+
             MainPage = new MainPage();
         }
 

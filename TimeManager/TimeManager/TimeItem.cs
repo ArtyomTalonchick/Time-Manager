@@ -18,14 +18,23 @@ namespace TimeManager
         {
             if(Schedule.ContainsKey(key))
                 return Schedule[key];
-            foreach(var intervalPattern in ItemsPatterns)
+            try
             {
-                if (intervalPattern.start.Year > key.Year || intervalPattern.start.Month > key.Month || intervalPattern.start.Day > key.Day ||
-                    intervalPattern.finish.Year < key.Year || intervalPattern.finish.Month < key.Month || intervalPattern.finish.Day < key.Day) 
-                    continue;
-                if(intervalPattern.days.Contains(key.DayOfWeek))
-                    return intervalPattern.timeItems;
+                foreach (var pattern in ItemsPatterns)
+                {
+                    if ((pattern.start != DateTime.MinValue && pattern.finish != DateTime.MinValue) &&
+                        (pattern.start.Year > key.Year || pattern.start.Month > key.Month || pattern.start.Day > key.Day ||
+                        pattern.finish.Year < key.Year || pattern.finish.Month < key.Month || pattern.finish.Day < key.Day))
+                        continue;
+                    if (pattern.days.Contains(key.DayOfWeek))
+                    {
+                        var newTimeItems = pattern.timeItems.Copy();
+                        Schedule.Add(key, newTimeItems);
+                        return newTimeItems;
+                    }
+                }
             }
+            catch{}
             return new TimeItems();
         }        
     }
@@ -74,7 +83,26 @@ namespace TimeManager
             OnCollectionChanged(NotifyCollectionChangedAction.Add, this);
         }
         public void Clear() => list.Clear();
-        public void CopyTo(TimeItem[] array, int arrayIndex) => list.CopyTo(array, arrayIndex);
+        public TimeItems Copy()
+        {
+            var NewtimeItems = new TimeItems();
+            foreach (var item in list)
+            {
+                var newItem = new TimeItem();
+                newItem.Finish = item.Finish;
+                newItem.Identifier = item.Identifier;
+                newItem.Index = item.Index;
+                newItem.Name = item.Name;
+                newItem.Note = item.Note;
+                newItem.Start = item.Start;
+                foreach(var note in item.Notes)
+                {
+                    newItem.Notes.Add((note.Note, note.IsCompleted));
+                }
+                NewtimeItems.Add(newItem);
+            }
+            return NewtimeItems;
+        }
         public bool Remove(TimeItem item) => list.Remove(item);
         public void RemoveAt(int index) => list.RemoveAt(index);
         public void DeleteByIdentifier(int identifier) 
@@ -195,7 +223,7 @@ namespace TimeManager
         public int Index { get; set; }
         public int Identifier { get; set; }
         public string Name { get; set; }
-        public List<(string, bool)> Notes { get; set; }
+        public List<(string Note, bool IsCompleted)> Notes { get; set; }
         public TimeSpan Start { get; set; }
         public TimeSpan Finish { get; set; }
                  
