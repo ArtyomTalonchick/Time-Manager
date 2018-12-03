@@ -11,7 +11,7 @@
     <item name="windowActionBar">false</item>
     <!-- Set theme colors from http://www.google.com/design/spec/style/color.html#color-color-palette -->
     <!-- colorPrimary is used for the default action bar background -->
-    <item name="colorPrimary">#1E88E5</item>   <!-- datePicker -->
+    <item name="colorPrimary">#1E88E5</item>   <!-- &&&&& -->
     <!-- colorPrimaryDark is used for the status bar -->
     <item name="colorPrimaryDark">#0D47A1</item>  <!-- bar -->
     <!-- colorAccent is used as the default value for colorControlActivated
@@ -25,6 +25,6 @@
   </style>
 
   <style name="AppCompatDialogStyle" parent="Theme.AppCompat.Light.Dialog">
-    <item name="colorAccent">#D50000</item>
+    <item name="colorAccent">#1E88E5</item>    <!-- datePicker -->
   </style>
 </resources>

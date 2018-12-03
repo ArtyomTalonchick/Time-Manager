@@ -11,19 +11,21 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace TimeManager
 {
 	public partial class App : Application
-	{        
+    {
         private string pathSchedule { get; set; }
+        private string pathPatterns { get; set; }
+
         public App ()
 		{
 			InitializeComponent();
             InitializeColor();
 
-            pathSchedule = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "pathSchedule.dat");
+            creatingPaths();
             deserialize();
             //func();
             //serialize();
 
-            Data.ItemsPatterns = new List<(List<DayOfWeek> days, DateTime start, DateTime finish, TimeItems timeItems)>();
+        //    Data.ItemsPatterns = new List<(List<DayOfWeek> days, DateTime start, DateTime finish, TimeItems timeItems)>();
 
             MainPage = new MainPage();
         }
@@ -55,17 +57,27 @@ namespace TimeManager
             Data.Schedule = new Dictionary<DateTime, TimeItems>();
             Data.Schedule.Add(new DateTime(2018, 12, 01), timeItems);
         }
+        public void creatingPaths()
+        {
+            pathSchedule = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "pathSchedule.dat");
+            pathPatterns = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "pathPatterns.dat");
+
+        }
         public void serialize()
         {
-            var formatter = new BinaryFormatter();           
+            var formatter = new BinaryFormatter();
             using (Stream s = File.Create(pathSchedule))
                 formatter.Serialize(s, Data.Schedule);
+            using (Stream s = File.Create(pathPatterns))
+                formatter.Serialize(s, Data.ItemsPatterns);
         }
         public void deserialize()
         {
             var formatter = new BinaryFormatter();
             using (Stream s = File.OpenRead(pathSchedule))
                 Data.Schedule = (Dictionary<DateTime, TimeItems>)formatter.Deserialize(s);
+            using (Stream s = File.OpenRead(pathPatterns))
+                Data.ItemsPatterns = (List<(List<DayOfWeek> days, DateTime start, DateTime finish, TimeItems timeItems)>)formatter.Deserialize(s);
         }
 
         //метод для инициализации цветов

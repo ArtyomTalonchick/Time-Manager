@@ -42,7 +42,9 @@ namespace TimeManager
             GridOfTimeItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) });
             GridOfTimeItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(12, GridUnitType.Star) });
 
-            InitializeGridOfTimeItem();
+        //    InitializeGridOfTimeItem();
+
+            ShoicePattern();
         }
 
         //инициализирует GridOfTimeItem элементами шаблоного дня
@@ -185,6 +187,73 @@ namespace TimeManager
             Data.ItemsPatterns.Add(newPattern);
         }
 
+        private void ShoicePattern()
+        {
+            var listSourse = new List<ItemsSource>();
+            foreach (var pattern in Data.ItemsPatterns)
+                listSourse.Add(new ItemsSource { Pattern = pattern });
 
+            var patternsListView = new ListView();
+            patternsListView.ItemsSource = listSourse;
+            patternsListView.ItemTapped += (s, e) =>
+            {
+                DisplayAlert("Уведомление", "Пришло новое сообщение", "ОK");
+            };
+            patternsListView.HasUnevenRows = true;
+            patternsListView.ItemTemplate = new DataTemplate(() =>
+            {
+                Label daysLabel = new Label { FontSize = 16, TextColor = ColorSetting.colorOfName};
+                daysLabel.SetBinding(Label.TextProperty, "Days");
+                Label IntervalLabel = new Label { FontSize = 12, TextColor = Color.Default };
+                IntervalLabel.SetBinding(Label.TextProperty, "Interval");
+                return new ViewCell
+                {
+                    View = new StackLayout
+                    {
+                        Padding = new Thickness(0, 5),
+                        Orientation = StackOrientation.Vertical,
+                        Children = { daysLabel, IntervalLabel }
+                    }
+                };
+            });
+            Content = patternsListView;
+        }
+
+        public class ItemsSource
+        {
+            public (List<DayOfWeek> days, DateTime start, DateTime finish, TimeItems timeItems) Pattern { get; set; }
+            private string days;
+            public string Days
+            {
+                get
+                {
+                    days = "";
+                    string[] daysOfWeek = { "Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье" };
+                    for (int i = 0; i < 7; i++)
+                    {
+                        if (Pattern.days.Contains((DayOfWeek)((i + 1) % 7)))
+                            days += daysOfWeek[i] + " ";
+                    }
+                    if (days == "")
+                        days = "На каждый день";
+                    return days;
+                }
+            }
+            private string interval;
+            public string Interval
+            {
+                get
+                {
+                    interval = "";                   
+                    if (Pattern.start != DateTime.MinValue)
+                    {
+                        interval += "с " + Pattern.start.ToShortDateString() + " по " + Pattern.finish.ToShortDateString();
+                    }
+                    if (interval == "")
+                        interval = "Без промежутка";
+                    return interval;
+                }
+            }
+        }
     }
 }
