@@ -61,6 +61,7 @@ namespace TimeManager
                 var finishLabel = new Label { Text = item.Finish.ToString(@"hh\:mm"), FontSize = 16, TextColor = ColorSetting.colorOfFinish, HorizontalOptions = LayoutOptions.Center, VerticalOptions = LayoutOptions.Start };
                 var nameButton = new Button { Text = item.Name, TextColor = ColorSetting.colorOfName, FontSize = 30, FontAttributes = FontAttributes.Italic, BackgroundColor = Color.Transparent, HorizontalOptions = LayoutOptions.Start, VerticalOptions = LayoutOptions.CenterAndExpand };
                 nameButton.Clicked += nameButton_Clicked;
+          //      nameButton.Pressed += nameButton_Pressed;
                 GridOfTimeItem.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                 GridOfTimeItem.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
                 var gridForItem = new Grid();
@@ -79,7 +80,7 @@ namespace TimeManager
             }
         }
 
-        //обработчик выбора элемента дня  -----  показывает заметки
+        //обработчик выбора элемента дня  -----  показывает заметки ---- 
         private void nameButton_Clicked(object s, EventArgs e)
         {
             //если "открыто окно" для добавления заметок
@@ -129,6 +130,20 @@ namespace TimeManager
             selectedGrid.Children.Add(addNoteButton, 0, i++);
         }
         
+        /*/обработчик выбора элемента дня  -----  показывает меню
+        private void nameButton_Pressed(object s, EventArgs e)
+        {
+            Task task = new Task(() => 
+            {
+                int x = DateTime.Now.Second;
+                while (Math.Abs(x - DateTime.Now.Second) < 2) ;
+                if (!((Button)s).)
+                    return;
+                var pressedItem = timeItems.FindItemByName(((Button)s).Text);
+                DisplayActionSheet(pressedItem.Name, "Отмена", "fds", "Удалить", "Изменить");
+            });
+        }/*/
+
         //обработчик удаления заметки
         private void deleteNote_Clicked(NoteView noteView, Button button)
         {
@@ -163,7 +178,7 @@ namespace TimeManager
             }
             addNoteIsOpen = !addNoteIsOpen;
         }
-
+        
         //обработчик выбора даты
         private void DatePickerOfTimeTable_DateSelected(object s, EventArgs e) => InitializeGridOfTimeItem();
 

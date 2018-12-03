@@ -14,6 +14,7 @@ namespace TimeManager
     {
         private TimeItems timeItems { get; set; }
         private (List<DayOfWeek> days, DateTime start, DateTime finish, TimeItems timeItems) newPattern;
+        private List<ItemsSource> choicePatternListView;
 
         //Коллекция TimeItem и визуальных элементов для их представления
         private List<(TimeItem timeItem, Grid grid, TimePicker startTimePicker, TimePicker finishTimePicker)> ListOfItemAndViews;
@@ -44,7 +45,7 @@ namespace TimeManager
 
         //    InitializeGridOfTimeItem();
 
-            ShoicePattern();
+            ChoicePattern();
         }
 
         //инициализирует GridOfTimeItem элементами шаблоного дня
@@ -61,7 +62,7 @@ namespace TimeManager
                 var nameEntry = new Entry { Text = item.Name, TextColor = ColorSetting.colorOfName, FontSize = 30, FontAttributes = FontAttributes.Italic };
                 var deleteButton = new Button { Text = "удалить", FontSize = 6, BackgroundColor = Color.Transparent, HorizontalOptions = LayoutOptions.End };
                 int copy_i = i;                                                                 //работает с помощью магии
-                deleteButton.Clicked += (_s, _e) => deleteButton_Clicked(item.Identifier, copy_i);
+                deleteButton.Clicked += (_s, _e) => deleteItemButton_Clicked(item.Identifier, copy_i);
                 var nameGrid = new Grid
                 {
                     ColumnDefinitions = {
@@ -161,7 +162,7 @@ namespace TimeManager
         }
 
         //удаление элемента дня
-        private void deleteButton_Clicked(int identifier, int index)    //ПЕРЕДЕЛАТЬ!!!
+        private void deleteItemButton_Clicked(int identifier, int index)    //ПЕРЕДЕЛАТЬ!!!
         {
             SaveChanges();
             timeItems.DeleteByIdentifier(identifier);
@@ -184,21 +185,33 @@ namespace TimeManager
                 }
             }
             newPattern.timeItems = timeItems;
-            Data.ItemsPatterns.Add(newPattern);
+            if(!Data.ItemsPatterns.Contains(newPattern))
+                Data.ItemsPatterns.Add(newPattern);
         }
 
-        private void ShoicePattern()
+        //обработчик кнопки сохранения шаблона 
+        private void SaveButton_Clicked(object s, EventArgs e)
         {
-            var listSourse = new List<ItemsSource>();
+            SaveChanges();
+            ChoicePattern();
+        }
+
+        //обработчик кнопки удаления шаблона
+        private void DeleteButton_Clicked(object s, EventArgs e)
+        {
+            if (Data.ItemsPatterns.Contains(newPattern))
+                Data.ItemsPatterns.Remove(newPattern);
+            ChoicePattern();
+        }
+
+        private void ChoicePattern()
+        {
+            choicePatternListView = new List<ItemsSource>();
             foreach (var pattern in Data.ItemsPatterns)
-                listSourse.Add(new ItemsSource { Pattern = pattern });
+                choicePatternListView.Add(new ItemsSource { Pattern = pattern });
 
             var patternsListView = new ListView();
-            patternsListView.ItemsSource = listSourse;
-            patternsListView.ItemTapped += (s, e) =>
-            {
-                DisplayAlert("Уведомление", "Пришло новое сообщение", "ОK");
-            };
+            patternsListView.ItemsSource = choicePatternListView;
             patternsListView.HasUnevenRows = true;
             patternsListView.ItemTemplate = new DataTemplate(() =>
             {
@@ -216,6 +229,13 @@ namespace TimeManager
                     }
                 };
             });
+            patternsListView.ItemSelected += (s, e) =>
+            {
+                Content = GridOfTimeTable;
+                newPattern = Data.ItemsPatterns[choicePatternListView.IndexOf((ItemsSource)patternsListView.SelectedItem)];
+                timeItems = newPattern.timeItems;
+                InitializeGridOfTimeItem();
+            };
             Content = patternsListView;
         }
 

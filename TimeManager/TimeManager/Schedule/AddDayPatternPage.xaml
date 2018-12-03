@@ -6,10 +6,17 @@
         <Grid x:Name="GridOfTimeTable">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="9*"/>
             </Grid.RowDefinitions>
-            <Button x:Name="ChoiceDayButton" Text="Выбрать дни" Grid.Row="0" Clicked="ChoiceOfDaysButton_Clicked"/>
-            <ScrollView Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="SaveButton" Text="Сохранить шаблон" Grid.Row="0" Grid.Column="0" Clicked="SaveButton_Clicked"/>
+            <Button x:Name="DeleteButton" Text="Удалить шаблон" Grid.Row="0" Grid.Column="1" Clicked="DeleteButton_Clicked"/>
+            <Button x:Name="ChoiceDayButton" Text="Выбрать дни" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Clicked="ChoiceOfDaysButton_Clicked"/>
+            <ScrollView Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
                 <ScrollView.Content>
                     <Grid x:Name="GridOfTimeItem"/>
                 </ScrollView.Content>

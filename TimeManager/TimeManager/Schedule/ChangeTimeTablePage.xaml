@@ -6,10 +6,17 @@
         <Grid x:Name="GridOfTimeTable">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
                 <RowDefinition Height="9*"/>
             </Grid.RowDefinitions>
-            <DatePicker x:Name="DatePickerOfTimeTable" Grid.Row="0" HorizontalOptions="Center" DateSelected="DatePickerOfTimeTable_DateSelected"/>
-            <ScrollView Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button x:Name="SaveButton" Text="Сохранить расписание" Grid.Row="0" Grid.Column="0" Clicked="SaveButton_Clicked"/>
+            <Button x:Name="DeleteButton" Text="Удалить расписание" Grid.Row="0" Grid.Column="1" Clicked="DeleteButton_Clicked"/>
+            <DatePicker x:Name="DatePickerOfTimeTable" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalOptions="Center" DateSelected="DatePickerOfTimeTable_DateSelected"/>
+            <ScrollView Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
                 <ScrollView.Content>
                     <Grid x:Name="GridOfTimeItem"/>
                 </ScrollView.Content>

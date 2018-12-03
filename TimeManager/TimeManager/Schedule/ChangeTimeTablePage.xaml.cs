@@ -182,7 +182,19 @@ namespace TimeManager
                 }
             }
         }
-        
+       
+        //обработчик кнопки сохранения шаблона 
+        private void SaveButton_Clicked(object s, EventArgs e)
+        {
+            SaveChanges();
+        }
+
+        //обработчик кнопки удаления шаблона
+        private void DeleteButton_Clicked(object s, EventArgs e)
+        {
+            if (Data.Schedule.ContainsKey(DatePickerOfTimeTable.Date))
+                Data.Schedule.Remove(DatePickerOfTimeTable.Date);
+        }
     }
 }
  
