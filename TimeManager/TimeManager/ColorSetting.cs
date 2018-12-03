@@ -11,5 +11,7 @@ namespace TimeManager
         public static Color colorOfFinish { get; set; }
         public static Color colorOfName { get; set; }
         public static Color colorOfBox { get; set; }
+        public static Color colorOfPage { get; set; }
+        public static Color colorOfMaster { get; set; }
     }
 }

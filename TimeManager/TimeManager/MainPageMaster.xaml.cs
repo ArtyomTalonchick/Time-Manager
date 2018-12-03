@@ -20,6 +20,7 @@ namespace TimeManager
         public MainPageMaster()
         {
             InitializeComponent();
+            this.BackgroundColor = ColorSetting.colorOfMaster;
 
             BindingContext = new MainPageMasterViewModel();
             ListView = MenuItemsListView;

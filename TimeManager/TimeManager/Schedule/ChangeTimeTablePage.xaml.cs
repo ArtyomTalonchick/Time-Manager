@@ -182,11 +182,7 @@ namespace TimeManager
                 }
             }
         }
-
-        private async void AddScheduleTemplateButton_Clicked(object s, EventArgs e)
-        {
-        //    await Navigation.PopAsync();
-        }
+        
     }
 }
  

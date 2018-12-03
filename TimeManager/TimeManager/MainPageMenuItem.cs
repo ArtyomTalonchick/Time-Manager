@@ -11,7 +11,6 @@ namespace TimeManager
         public MainPageMenuItem()
         {
             TargetType = typeof(MainPageDetail);
-
         }
         public int Id { get; set; }
         public string Title { get; set; }

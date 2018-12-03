@@ -24,7 +24,8 @@
           <Label
               Grid.Column="1"
               Grid.Row="2"
-              Text="AppName"
+              Text="Time Manager"
+              FontSize="20"
               Style="{DynamicResource SubtitleStyle}"/>
         </Grid>
       </ListView.Header>

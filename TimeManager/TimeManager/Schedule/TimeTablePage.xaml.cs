@@ -49,6 +49,7 @@ namespace TimeManager
         //инициализирует GridOfTimeItem элементами дня соответсвующего выбранной дате на DatePickerOfTimeTable
         private void InitializeGridOfTimeItem()
         {
+            this.BackgroundColor = ColorSetting.colorOfPage;
             timeItems = Data.Schedule.GetTimeItems(DatePickerOfTimeTable.Date);
             GridOfTimeItem.RowDefinitions.Clear();
             GridOfTimeItem.Children.Clear();

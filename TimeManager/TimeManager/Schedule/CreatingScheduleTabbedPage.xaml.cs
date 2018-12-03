@@ -15,6 +15,7 @@ namespace TimeManager
         public CreatingScheduleTabbedPage ()
         {
             InitializeComponent();
+            this.BackgroundColor = ColorSetting.colorOfPage;
             Children.Add(new ChangeTimeTablePage { Title = "Изменить день" });
             Children.Add(new AddDayPatternPage { Title = "Шаблон дня" });
 

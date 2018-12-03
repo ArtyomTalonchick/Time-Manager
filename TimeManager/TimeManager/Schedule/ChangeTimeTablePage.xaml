@@ -8,14 +8,7 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="9*"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <DatePicker x:Name="DatePickerOfTimeTable" Grid.Column="0" HorizontalOptions="Start" DateSelected="DatePickerOfTimeTable_DateSelected"/>
-                <Button x:Name="AddScheduleTemplateButton" Text="Добавить шаблон" Grid.Column="1" HorizontalOptions="End" Clicked="AddScheduleTemplateButton_Clicked"/>
-            </Grid>
+            <DatePicker x:Name="DatePickerOfTimeTable" Grid.Row="0" HorizontalOptions="Center" DateSelected="DatePickerOfTimeTable_DateSelected"/>
             <ScrollView Grid.Row="1">
                 <ScrollView.Content>
                     <Grid x:Name="GridOfTimeItem"/>

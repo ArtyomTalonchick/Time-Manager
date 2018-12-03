@@ -34,8 +34,10 @@ namespace TimeManager
                     }
                 }
             }
-            catch{}
-            return new TimeItems();
+            catch{ }
+            var emptyTimeItems = new TimeItems();
+            Schedule.Add(key, emptyTimeItems);
+            return emptyTimeItems;
         }        
     }
 

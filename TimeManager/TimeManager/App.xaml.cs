@@ -74,7 +74,9 @@ namespace TimeManager
             ColorSetting.colorOfStart = Color.FromHex("F44336");
             ColorSetting.colorOfFinish = Color.FromHex("42A5F5");
             ColorSetting.colorOfName = Color.FromHex("424242");
-            ColorSetting.colorOfBox = Color.FromHex("E0E0E0");
+            ColorSetting.colorOfBox = Color.FromHex("FAFAFA");      //почти белый
+            ColorSetting.colorOfPage = Color.FromHex("EEEEEE");     //серый
+            ColorSetting.colorOfMaster = Color.FromHex("E3F2FD");
         }
 
         protected override void OnStart ()
