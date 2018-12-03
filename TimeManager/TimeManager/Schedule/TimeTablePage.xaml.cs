@@ -39,11 +39,28 @@ namespace TimeManager
             };
             ToolbarItems.Add(changeTb);
 
+            var viewCell = new TimeItemViewCell();
+            var listView = new ListView();
+            listView.ItemsSource = Data.Schedule.GetTimeItems(DatePickerOfTimeTable.Date);
+            listView.HasUnevenRows = true;
+            listView.ItemTemplate = new DataTemplate(() =>
+            {                
+                viewCell.SetBinding(TimeItemViewCell.NameProperty, "Name");
+                viewCell.SetBinding(TimeItemViewCell.StartProperty, "Start");
+                viewCell.SetBinding(TimeItemViewCell.FinishProperty, "Finish");
+                viewCell.SetBinding(TimeItemViewCell.NotesProperty, "Notes");
+                return viewCell;
+            });
+            listView.ItemSelected += (s, e) => viewCell.ShowNotes();
+
+            Content = listView;
+
             GridOfTimeItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
             GridOfTimeItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(6, GridUnitType.Star) });
 
             listOfGrid = new List<Grid>();
-            InitializeGridOfTimeItem();
+
+         //   InitializeGridOfTimeItem();
         }
         
         //инициализирует GridOfTimeItem элементами дня соответсвующего выбранной дате на DatePickerOfTimeTable

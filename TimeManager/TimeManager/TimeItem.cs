@@ -228,7 +228,7 @@ namespace TimeManager
         public List<(string Note, bool IsCompleted)> Notes { get; set; }
         public TimeSpan Start { get; set; }
         public TimeSpan Finish { get; set; }
-                 
+
         public string Note { get; set; }
         public TimeItem()
         {
@@ -237,7 +237,7 @@ namespace TimeManager
             Start = new TimeSpan();
             Finish = new TimeSpan();
             Name = "Название";
-            Notes = new List<(string, bool)>();
+            Notes = new List<(string, bool)>();            
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
