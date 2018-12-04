@@ -18,28 +18,14 @@ namespace TimeManager
         private List<(TimeItem timeItem, Grid grid, TimePicker startTimePicker, TimePicker finishTimePicker)> ListOfItemAndViews;
 
         //конструктор
-        //public ChangeTimeTablePage(TimeTable timeTable)
         public ChangeTimeTablePage()
         {
             InitializeComponent();
-            var saveTb = new ToolbarItem
-            {
-                Text = "Сохранить",
-                Order = ToolbarItemOrder.Primary,
-                Priority = 0,
-            };
-            saveTb.Clicked += async (s, e) =>
-            {
-                SaveChanges();
-          //      await Navigation.PopAsync();
-           //     timeTable.ScheduleUpdate();
-            };
-            ToolbarItems.Add(saveTb);
-            
+                       
             GridOfTimeItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) });
             GridOfTimeItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(12, GridUnitType.Star) });
 
-            InitializeGridOfTimeItem();
+            ShowAllDays();
         }
 
         //инициализирует GridOfTimeItem элементами дня соответсвующего выбранной дате на DatePickerOfTimeTable
@@ -81,7 +67,7 @@ namespace TimeManager
                 i += 2;
             }
             InitializeListOfGridForNotes();
-            var addTimeItemButton = new Button { Text = "Добавить", HorizontalOptions=LayoutOptions.Center };
+            var addTimeItemButton = new Button { Text = "Добавить элемент", HorizontalOptions=LayoutOptions.Center };
             addTimeItemButton.Clicked += addTimeItemButton_Clicked;
             GridOfTimeItem.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             GridOfTimeItem.Children.Add(addTimeItemButton, 0, GridOfTimeItem.RowDefinitions.Count - 1);
@@ -183,17 +169,53 @@ namespace TimeManager
             }
         }
        
-        //обработчик кнопки сохранения шаблона 
+        //обработчик кнопки сохранения дня 
         private void SaveButton_Clicked(object s, EventArgs e)
         {
             SaveChanges();
+            ShowAllDays();
         }
 
-        //обработчик кнопки удаления шаблона
+        //обработчик кнопки удаления дня
         private void DeleteButton_Clicked(object s, EventArgs e)
         {
             if (Data.Schedule.ContainsKey(DatePickerOfTimeTable.Date))
                 Data.Schedule.Remove(DatePickerOfTimeTable.Date);
+            ShowAllDays();
+        }
+
+        private void ShowAllDays()
+        {
+            var daysListView = new ListView();
+            var dateList = new List<dateItemForListView>();
+            foreach (var item in Data.Schedule)
+                dateList.Add(new dateItemForListView { dateTime = item.Key });
+            daysListView.ItemsSource = dateList;
+            daysListView.ItemTemplate = new DataTemplate(() =>
+            {
+                Label daysLabel = new Label { FontSize = 16, TextColor = ColorSetting.colorOfName };
+                daysLabel.SetBinding(Label.TextProperty, "date");
+                return new ViewCell { View = daysLabel };
+            });
+            daysListView.ItemSelected += (_s, _e) =>
+            {
+                Content = GridOfTimeTable;
+                DatePickerOfTimeTable.Date = ((dateItemForListView)daysListView.SelectedItem).dateTime;
+            };
+            Content = daysListView;
+        }
+
+        private void BackButton_Clicked(object s, EventArgs e) => ShowAllDays();
+
+        private class dateItemForListView
+        {
+            public DateTime dateTime { get; set; }
+            public string date
+            {
+                get => dateTime.ToLongDateString();
+                set => dateTime = new DateTime(0);
+            }
+
         }
     }
 }

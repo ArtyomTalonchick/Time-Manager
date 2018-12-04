@@ -9,14 +9,18 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="9*"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Button x:Name="SaveButton" Text="Сохранить расписание" Grid.Row="0" Grid.Column="0" Clicked="SaveButton_Clicked"/>
-            <Button x:Name="DeleteButton" Text="Удалить расписание" Grid.Row="0" Grid.Column="1" Clicked="DeleteButton_Clicked"/>
-            <DatePicker x:Name="DatePickerOfTimeTable" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" HorizontalOptions="Center" DateSelected="DatePickerOfTimeTable_DateSelected"/>
-            <ScrollView Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="SaveButton" Text="Сохранить" BackgroundColor="Transparent" Grid.Column="0" Clicked="SaveButton_Clicked"/>
+                <Button x:Name="DeleteButton" Text="Удалить" BackgroundColor="Transparent" Grid.Column="1" Clicked="DeleteButton_Clicked"/>
+                <Button x:Name="BackButton" Text="Назад" BackgroundColor="Transparent" Grid.Column="2" Clicked="BackButton_Clicked"/>
+            </Grid>
+            <DatePicker x:Name="DatePickerOfTimeTable" Grid.Row="1" HorizontalOptions="Center" DateSelected="DatePickerOfTimeTable_DateSelected"/>
+            <ScrollView Grid.Row="2" >
                 <ScrollView.Content>
                     <Grid x:Name="GridOfTimeItem"/>
                 </ScrollView.Content>

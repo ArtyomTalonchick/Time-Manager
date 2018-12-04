@@ -29,22 +29,10 @@ namespace TimeManager
             newPattern.start = DateTime.MinValue;
             newPattern.finish = DateTime.MinValue;
             ListOfItemAndViews = new List<(TimeItem, Grid, TimePicker, TimePicker)>();
-
-            var saveTb = new ToolbarItem
-            {
-                Text = "Сохранить",
-                Order = ToolbarItemOrder.Primary,
-                Priority = 0,
-            };
-            saveTb.Clicked += (s, e) => SaveChanges();
             
-            ToolbarItems.Add(saveTb);
-
             GridOfTimeItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(3, GridUnitType.Star) });
             GridOfTimeItem.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(12, GridUnitType.Star) });
-
-        //    InitializeGridOfTimeItem();
-
+            
             ChoicePattern();
         }
 
@@ -88,7 +76,7 @@ namespace TimeManager
                 i += 2;
             }
             InitializeListOfGridForNotes();
-            var addTimeItemButton = new Button { Text = "Добавить", HorizontalOptions = LayoutOptions.Center };
+            var addTimeItemButton = new Button { Text = "Добавить элемент", HorizontalOptions = LayoutOptions.Center };
             addTimeItemButton.Clicked += addTimeItemButton_Clicked;
             GridOfTimeItem.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             GridOfTimeItem.Children.Add(addTimeItemButton, 0, GridOfTimeItem.RowDefinitions.Count - 1);
@@ -239,6 +227,9 @@ namespace TimeManager
             Content = patternsListView;
         }
 
+        private void BackButton_Clicked(object s, EventArgs e) => ChoicePattern();
+
+        //класс для представления шаблонов в ListView
         public class ItemsSource
         {
             public (List<DayOfWeek> days, DateTime start, DateTime finish, TimeItems timeItems) Pattern { get; set; }
